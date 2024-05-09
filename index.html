@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="./src/style.css" />
+    <script type="module" src="./src/main.ts" defer></script>
+    <title>traile</title>
+  </head>
+  <body>
+    <div id="app">
+      <div id="current-puzzle-text">
+        Find a path from
+        <span class="country-name" id="country-name-1"></span> to
+        <span class="country-name" id="country-name-2"></span>
+      </div>
+      <div id="globe-container"><div id="loading-text">Loading...</div></div>
+      <div id="country-input-wrapper">
+        <input id="country-input" type="text" placeholder="Enter a country" />
+        <button id="country-submit">Submit</button>
+      </div>
+    </div>
+  </body>
+</html>

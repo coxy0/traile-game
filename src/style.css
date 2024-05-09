@@ -1,0 +1,91 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+:root {
+  --canvas-dimension: 320px;
+  --half-canvas-dimension: 160px;
+}
+
+@media (min-width: 450px) {
+  :root {
+    --canvas-dimension: 600px;
+    --half-canvas-dimension: 300px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(120, 120, 120);
+}
+
+/*  */
+
+#current-puzzle-text {
+  width: calc((4 / 5) * var(--canvas-dimension));
+  margin: 1rem 0;
+  font-size: 1.4em;
+  font-family: "Poppins";
+  text-align: center;
+}
+
+.country-name {
+  color: rgb(30, 0, 255);
+}
+
+#globe-container {
+  width: var(--canvas-dimension);
+  height: var(--canvas-dimension);
+  display: grid;
+  place-items: center;
+  cursor: grab;
+  clip-path: circle(
+    var(--half-canvas-dimension) at var(--half-canvas-dimension)
+      var(--half-canvas-dimension)
+  );
+}
+
+#country-input-wrapper {
+  width: calc((4 / 5) * var(--canvas-dimension));
+  margin: 16px 4px;
+  display: flex;
+  align-items: center;
+}
+
+#country-input {
+  width: 80%;
+  height: 40px;
+  padding: 12px 20px;
+  font-size: 1em;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 6px 0 0 6px;
+}
+
+#country-input:focus {
+  border-color: rgb(80, 80, 80);
+  outline: none;
+}
+
+#country-submit {
+  width: 20%;
+  height: 40px;
+  font-size: 1em;
+  background-color: rgb(0, 136, 255);
+  border: none;
+  border-radius: 0 6px 6px 0;
+}
+
+#country-submit:hover {
+  background-color: rgb(0, 128, 255);
+}
