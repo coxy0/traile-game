@@ -4,7 +4,7 @@ import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 // import { polygonCentroid } from "./utils/centroid";
 import { islandCountries } from "./utils/island";
-import { getRandomCountries } from "./utils/randomCountries";
+import { randomCountries } from "./utils/randomCountries";
 
 fetch("src/assets/data/ne_110m_admin_0_countries.geojson")
   .then((res) => res.json())
@@ -29,6 +29,7 @@ fetch("src/assets/data/ne_110m_admin_0_countries.geojson")
     countries = countries.features;
     const earth = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
       .globeImageUrl(globeImage)
+      .showAtmosphere(false)
       .onGlobeReady(() => {
         const globeContainer = document.getElementById("globe-container");
         const loadingText = document.getElementById("loading-text");
@@ -44,15 +45,17 @@ fetch("src/assets/data/ne_110m_admin_0_countries.geojson")
     scene.add(earth);
     let rotateEarth = true;
 
-    const countriesISO: string[] = [];
-    const refreshCountries = (countryISO: string | null) => {
-      if (countryISO) countriesISO.push(countryISO);
-      const filteredCountries = countries.filter(
-        (data: { properties: { ISO_A3: string } }) =>
-          countriesISO.includes(data.properties.ISO_A3)
-      );
+    const highlightedCountries: string[] = [];
+    const refreshCountries = (countryName: string | null) => {
+      if (countryName) highlightedCountries.push(countryName.toLowerCase());
 
-      earth.polygonsData(filteredCountries);
+      const filtered = countries.filter(
+        (data: { properties: { ADMIN: string } }) => {
+          const name = data.properties.ADMIN.toLowerCase();
+          return highlightedCountries.includes(name);
+        }
+      );
+      earth.polygonsData(filtered);
     };
     refreshCountries(null);
 
@@ -80,28 +83,21 @@ fetch("src/assets/data/ne_110m_admin_0_countries.geojson")
 
     //
 
-    const countriesData: { name: string; ISO: string }[] = [];
+    const countriesData: string[] = [];
     const mainlandCountries: string[] = [];
     for (const data of countries) {
-      const name = data.properties.ADMIN;
-      const ISO = data.properties.ISO_A3;
-
-      countriesData.push({
-        name: name,
-        ISO: ISO,
-      });
-
+      const name = data.properties.ADMIN.toLowerCase();
+      countriesData.push(name);
       if (!islandCountries.includes(name)) mainlandCountries.push(name);
     }
-    const countriesDataMap = new Map(
-      countriesData.map((country) => [country.name.toLowerCase(), country.ISO])
-    );
 
     //
 
-    const [country1, country2] = getRandomCountries(mainlandCountries);
-    refreshCountries(countriesDataMap.get(country1.toLowerCase())!);
-    refreshCountries(countriesDataMap.get(country2.toLowerCase())!);
+    const [country1, country2] = randomCountries(mainlandCountries);
+    console.log(country1, country2);
+
+    refreshCountries(country1);
+    refreshCountries(country2);
 
     const country1Span = document.getElementById(
       "country-name-1"
@@ -118,21 +114,15 @@ fetch("src/assets/data/ne_110m_admin_0_countries.geojson")
     const handleSubmit = () => {
       const inputValue = countryInput.value.toLowerCase();
       if (!inputValue) return;
+      countryInput.value = "";
       console.log(`Entered value: ${inputValue}`);
 
-      const ISOCode = countriesDataMap.get(inputValue);
-      if (ISOCode) {
-        console.log("Valid country");
-        refreshCountries(ISOCode);
-      }
-
-      countryInput.value = "";
+      if (countriesData.includes(inputValue)) refreshCountries(inputValue);
     };
 
     const countryInput = document.getElementById(
       "country-input"
     ) as HTMLInputElement;
-
     countryInput.addEventListener("keydown", (event: KeyboardEvent) => {
       if (event.key === "Enter") handleSubmit();
     });
@@ -140,7 +130,6 @@ fetch("src/assets/data/ne_110m_admin_0_countries.geojson")
     const countryInputButton = document.getElementById(
       "country-submit"
     ) as HTMLButtonElement;
-
     countryInputButton.addEventListener("click", (event: MouseEvent) => {
       if (event.button === 0) handleSubmit();
     });

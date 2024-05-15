@@ -1,8 +1,8 @@
-export const getRandomCountries = (arr: string[]): string[] => {
-  for (let i = arr.length - 1; i > 0; i--) {
+export const randomCountries = (countries: string[]): string[] => {
+  for (let i = countries.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+    [countries[i], countries[j]] = [countries[j], countries[i]];
   }
 
-  return [arr[0], arr[1]];
+  return [countries[0], countries[1]];
 };
