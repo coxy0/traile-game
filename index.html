@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="./src/style.css" />
+    <script type="module" src="./src/dialogs.ts" defer></script>
     <script type="module" src="./src/main.ts" defer></script>
     <title>traile</title>
   </head>
@@ -47,7 +48,7 @@
               />
             </svg>
           </button>
-          <button type="button">
+          <button type="button" id="stats-button">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -61,7 +62,7 @@
               />
             </svg>
           </button>
-          <button type="button">
+          <button type="button" id="settings-button">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -80,6 +81,15 @@
           </button>
         </menu>
       </header>
+      <dialog class="modal-wrapper" id="info-modal">
+        <div class="modal-content"><p>Info</p></div>
+      </dialog>
+      <dialog class="modal-wrapper" id="stats-modal">
+        <div class="modal-content"><p>Stats</p></div>
+      </dialog>
+      <dialog class="modal-wrapper" id="settings-modal">
+        <div class="modal-content"><p>Settings</p></div>
+      </dialog>
       <div id="current-puzzle-text">
         Find a path from
         <span class="country-name" id="country-name-1"></span> to
