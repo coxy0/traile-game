@@ -1,1 +1,1 @@
-"# traile-game" 
+traile - daily country web game (in development)
