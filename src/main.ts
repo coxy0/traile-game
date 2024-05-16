@@ -1,10 +1,11 @@
 import * as THREE from "three";
-import ThreeGlobe from "three-globe";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
+import ThreeGlobe from "three-globe";
 
-// import { polygonCentroid } from "./utils/centroid";
+import { randomHexColour } from "./utils/randomHex";
 import { islandCountries } from "./utils/island";
 import { randomCountries } from "./utils/randomCountries";
+import { polygonCentroid } from "./utils/centroid";
 
 fetch("src/assets/data/ne_110m_admin_0_countries.geojson")
   .then((res) => res.json())
@@ -38,7 +39,7 @@ fetch("src/assets/data/ne_110m_admin_0_countries.geojson")
         console.log(`Loaded texture: ${globeImage}`);
       })
       .polygonsData(countries)
-      .polygonCapColor(() => "rgba(200, 0, 0, 0.8)")
+      .polygonCapColor(randomHexColour)
       .polygonSideColor(() => "rgba(0, 0, 0, 1)")
       .polygonStrokeColor(() => "#111")
       .polygonsTransitionDuration(1500);
@@ -86,28 +87,67 @@ fetch("src/assets/data/ne_110m_admin_0_countries.geojson")
     const countriesData: string[] = [];
     const mainlandCountries: string[] = [];
     for (const data of countries) {
-      const name = data.properties.ADMIN.toLowerCase();
-      countriesData.push(name);
-      if (!islandCountries.includes(name)) mainlandCountries.push(name);
+      const name = data.properties.ADMIN;
+      const nameLower = name.toLowerCase();
+      countriesData.push(nameLower);
+      if (!islandCountries.includes(name)) mainlandCountries.push(nameLower);
     }
 
     //
 
-    const [country1, country2] = randomCountries(mainlandCountries);
-    console.log(country1, country2);
+    const getCenter = (country: string): number[] => {
+      for (const data of countries) {
+        const name = data.properties.ADMIN.toLowerCase();
+        if (country === name) {
+          const coordinates = data.geometry.coordinates;
+          const type = data.geometry.type;
+
+          let allCoordinates = coordinates[0];
+          if (type === "MultiPolygon")
+            allCoordinates = coordinates.reduce(
+              (accumulator: number[][], currentPolygon: number[][][]) =>
+                accumulator.concat(currentPolygon[0]),
+              []
+            );
+
+          return polygonCentroid(allCoordinates);
+        }
+      }
+      return [];
+    };
+
+    const getContinent = (country: string): string | undefined => {
+      for (const data of countries) {
+        const name = data.properties.ADMIN.toLowerCase();
+        if (country === name) return data.properties.CONTINENT;
+      }
+      return;
+    };
+
+    let country1, country2, cx1, cy1, cx2, cy2, dist, continent1, continent2;
+    do {
+      [country1, country2] = randomCountries(mainlandCountries);
+
+      [cx1, cy1] = getCenter(country1);
+      [cx2, cy2] = getCenter(country2);
+      // console.log(`(cx1, cy1): (${cx1}, ${cy1}), (cx2, cy2): (${cx2}, ${cy2})`);
+      dist = Math.sqrt((cx1 - cx2) ** 2 + (cy1 - cy2) ** 2);
+      // console.log(dist);
+
+      continent1 = getContinent(country1);
+      continent2 = getContinent(country2);
+    } while (dist <= 25 || dist >= 40 || continent1 !== continent2);
 
     refreshCountries(country1);
     refreshCountries(country2);
 
-    const country1Span = document.getElementById(
-      "country-name-1"
-    ) as HTMLSpanElement;
-    country1Span.innerHTML = country1;
+    const updateCountrySpan = (id: string, country: string) => {
+      const countrySpan = document.getElementById(id) as HTMLSpanElement;
+      countrySpan.innerHTML = country;
+    };
 
-    const country2Span = document.getElementById(
-      "country-name-2"
-    ) as HTMLSpanElement;
-    country2Span.innerHTML = country2;
+    updateCountrySpan("country-name-1", country1);
+    updateCountrySpan("country-name-2", country2);
 
     //
 
