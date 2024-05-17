@@ -7,10 +7,11 @@ import ThreeGlobe from "three-globe";
 import globeImage from "./assets/images/earth.jpg";
 
 import { randomHexColour } from "./utils/randomHex";
+import { attachCheckboxFuncs } from "./utils/checkbox";
 import { islandCountries } from "./utils/island";
 import { randomCountries } from "./utils/randomCountries";
-// import { polygonCentroid } from "./utils/centroid";
 import { dist, closestPoints } from "./utils/closest";
+import { polygonCentroid } from "./utils/centroid";
 
 const canvas: HTMLCanvasElement = document.createElement("canvas");
 document.getElementById("globe-container")?.appendChild(canvas);
@@ -73,6 +74,12 @@ controls.addEventListener("change", () => {
 });
 
 let rotateEarth = true;
+attachCheckboxFuncs(
+  "rotate-earth",
+  () => (rotateEarth = true),
+  () => (rotateEarth = false)
+);
+
 (function animate() {
   requestAnimationFrame(animate);
 
@@ -123,14 +130,14 @@ const getContinent = (country: string): string | undefined => {
   return;
 };
 
-let country1, country2;
+let country1, country2, country1Points, country2Points;
 let cx1, cy1, cx2, cy2, distance;
 let continent1, continent2;
 do {
   [country1, country2] = randomCountries(mainlandCountries);
 
-  const country1Points = getPoints(country1);
-  const country2Points = getPoints(country2);
+  country1Points = getPoints(country1);
+  country2Points = getPoints(country2);
   [cx1, cy1, cx2, cy2] = closestPoints(country1Points, country2Points);
   distance = dist(cx1, cy1, cx2, cy2);
 
@@ -140,6 +147,9 @@ do {
 
 refreshCountries(country1);
 refreshCountries(country2);
+
+const country1Center = polygonCentroid(country1Points);
+const country2Center = polygonCentroid(country2Points);
 
 const updateCountrySpan = (id: string, country: string) => {
   const countrySpan = document.getElementById(id) as HTMLSpanElement;
