@@ -1,9 +1,10 @@
+import geographicData from "./assets/data/ne_110m_admin_0_countries.json";
+const countries = geographicData.features;
+
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import ThreeGlobe from "three-globe";
-
-import geographicData from "./assets/data/ne_110m_admin_0_countries.json";
-const countries = geographicData.features;
+import globeImage from "./assets/images/earth.jpg";
 
 import { randomHexColour } from "./utils/randomHex";
 import { islandCountries } from "./utils/island";
@@ -26,8 +27,6 @@ scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI));
 
 const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 camera.position.setZ(176);
-
-const globeImage = "src/assets/images/earth.jpg";
 
 const earth = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
   .globeImageUrl(globeImage)
