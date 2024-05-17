@@ -82,13 +82,23 @@
         </menu>
       </header>
       <dialog class="modal-wrapper" id="info-modal">
-        <div class="modal-content"><p>Info</p></div>
+        <div class="modal-content"><h3 class="modal-heading">Info</h3></div>
       </dialog>
       <dialog class="modal-wrapper" id="stats-modal">
-        <div class="modal-content"><p>Stats</p></div>
+        <div class="modal-content"><h3 class="modal-heading">Stats</h3></div>
       </dialog>
       <dialog class="modal-wrapper" id="settings-modal">
-        <div class="modal-content"><p>Settings</p></div>
+        <div class="modal-content">
+          <h3 class="modal-heading">Settings</h3>
+          <div class="settings-checkbox-wrapper">
+            <input
+              type="checkbox"
+              class="settings-checkbox"
+              id="rotate-earth"
+              checked
+            /><label for="rotate-earth">Rotate earth</label>
+          </div>
+        </div>
       </dialog>
       <div id="current-puzzle-text">
         Find a path from
