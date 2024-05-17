@@ -114,6 +114,19 @@
   box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.2);
 }
 
+.modal-heading {
+  margin-bottom: 1rem;
+}
+
+.settings-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.settings-checkbox {
+  margin: 0.5rem;
+}
+
 /*  */
 
 #current-puzzle-text {
@@ -177,6 +190,5 @@
 }
 
 #past-guesses-wrapper {
-  width: calc((2 / 3) * var(--canvas-dimension));
-  height: 4rem;
+  width: calc((4 / 5) * var(--canvas-dimension));
 }
