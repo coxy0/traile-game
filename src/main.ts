@@ -29,6 +29,13 @@ scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI));
 const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 camera.position.setZ(176);
 
+const colourMap = new Map();
+for (const country of countries)
+  colourMap.set(country.properties.ISO_A3, randomHexColour());
+const getPolygonCapColor = (feature: {
+  properties: { ISO_A3: string };
+}): string => colourMap.get(feature.properties.ISO_A3);
+
 const earth = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
   .globeImageUrl(globeImage)
   .showAtmosphere(false)
@@ -40,7 +47,8 @@ const earth = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
     console.log(`Loaded texture: ${globeImage}`);
   })
   .polygonsData(countries)
-  .polygonCapColor(randomHexColour)
+  // .polygonCapColor(randomHexColour)
+  .polygonCapColor(getPolygonCapColor as (obj: object) => string)
   .polygonSideColor(() => "rgba(0, 0, 0, 1)")
   .polygonStrokeColor(() => "#111")
   .polygonsTransitionDuration(1500);
@@ -143,7 +151,7 @@ do {
 
   continent1 = getContinent(country1);
   continent2 = getContinent(country2);
-} while (distance <= 20 || distance >= 25 || continent1 !== continent2);
+} while (distance <= 20 || distance >= 24 || continent1 !== continent2);
 
 refreshCountries(country1);
 refreshCountries(country2);
