@@ -13,12 +13,10 @@ buttonsAndModals.forEach((pair) => {
   });
 
   modal.addEventListener("click", (event) => {
-    const target = event.target;
-    if (target === modal) modal.style.display = "none";
+    if (event.target === modal) modal.style.display = "none";
   });
 
   document.addEventListener("keydown", (event: KeyboardEvent) => {
-    const key = event.key;
-    if (key === "Escape") modal.style.display = "none";
+    if (event.key === "Escape") modal.style.display = "none";
   });
 });
