@@ -207,7 +207,7 @@ const createPastGuess = (country: string) => {
 //
 
 const successfulSubmit = (inputValue: string) => {
-  centreCountry(getPoints(inputValue));
+  refreshCountries(inputValue);
   createPastGuess(inputValue);
 };
 
