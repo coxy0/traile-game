@@ -12,7 +12,7 @@ import { attachCheckboxFuncs } from "./utils/checkbox";
 import { islandCountries } from "./utils/island";
 import { randomCountries } from "./utils/randomCountries";
 import { dist, closestPoints } from "./utils/closest";
-// import { polygonCentroid } from "./utils/centroid";
+import { polygonCentroid } from "./utils/centroid";
 
 const canvas: HTMLCanvasElement = document.createElement("canvas");
 document.getElementById("globe-container")?.appendChild(canvas);
@@ -27,7 +27,7 @@ scene.add(new THREE.AmbientLight(0xcccccc, Math.PI));
 scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI));
 
 const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-camera.position.setZ(176);
+camera.position.z = 176;
 
 const colourMap = new Map();
 for (const country of countries)
@@ -36,7 +36,7 @@ const getPolygonCapColor = (feature: {
   properties: { ADMIN: string };
 }): string => colourMap.get(feature.properties.ADMIN.toLowerCase());
 
-const earth = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
+const earth = new ThreeGlobe({ waitForGlobeReady: true, animateIn: false })
   .globeImageUrl(globeImage)
   .bumpImageUrl(globeBumpImage)
   .showAtmosphere(false)
@@ -49,7 +49,6 @@ const earth = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
     console.log(`Loaded texture: ${globeBumpImage}`);
   })
   .polygonsData(countries)
-  // .polygonCapColor(randomHexColour)
   .polygonCapColor(getPolygonCapColor as (obj: object) => string)
   .polygonSideColor(() => "rgba(0, 0, 0, 1)")
   .polygonStrokeColor(() => "#111")
@@ -172,6 +171,11 @@ const updateCountrySpan = (id: string, country: string) => {
 
 updateCountrySpan("country-name-1", country1);
 updateCountrySpan("country-name-2", country2);
+
+const [c1Long, c1Lat] = polygonCentroid(country1Points);
+const rotationX = (c1Lat * Math.PI) / 180;
+const rotationY = -(c1Long * Math.PI) / 180;
+earth.rotation.set(rotationX, rotationY, 0);
 
 //
 
