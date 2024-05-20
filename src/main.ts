@@ -181,6 +181,8 @@ earth.rotation.set(rotationX, rotationY, 0);
 
 const createPastGuess = (country: string) => {
   const wrapper = document.getElementById("past-guesses-wrapper");
+  if (!wrapper?.childElementCount)
+    wrapper?.style.setProperty("padding", "0.5rem 0.75rem");
 
   const pastGuessDiv = document.createElement("div");
   pastGuessDiv.className = "past-guess";

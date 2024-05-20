@@ -189,7 +189,6 @@
 
 #past-guesses-wrapper {
   width: var(--canvas-dimension);
-  padding: 0.5rem 0.75rem;
   display: flex;
   flex-wrap: wrap;
   background-color: rgb(40, 40, 40);
