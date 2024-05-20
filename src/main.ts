@@ -172,10 +172,14 @@ const updateCountrySpan = (id: string, country: string) => {
 updateCountrySpan("country-name-1", country1);
 updateCountrySpan("country-name-2", country2);
 
-const [c1Long, c1Lat] = polygonCentroid(country1Points);
-const rotationX = (c1Lat * Math.PI) / 180;
-const rotationY = -(c1Long * Math.PI) / 180;
-earth.rotation.set(rotationX, rotationY, 0);
+const centreCountry = (countryPoints: number[][]) => {
+  const [cLong, cLat] = polygonCentroid(countryPoints);
+  const rotationX = (cLat * Math.PI) / 180;
+  const rotationY = -(cLong * Math.PI) / 180;
+  earth.rotation.set(rotationX, rotationY, 0);
+};
+
+centreCountry(country1Points);
 
 //
 
@@ -203,7 +207,7 @@ const createPastGuess = (country: string) => {
 //
 
 const successfulSubmit = (inputValue: string) => {
-  refreshCountries(inputValue);
+  centreCountry(getPoints(inputValue));
   createPastGuess(inputValue);
 };
 
