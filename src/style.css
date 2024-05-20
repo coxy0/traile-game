@@ -20,6 +20,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: "Poppins";
 }
 
 #app {
@@ -62,7 +63,6 @@
 
 #header-title {
   flex-grow: 1;
-  font-family: "Poppins";
   text-align: left;
   letter-spacing: 0.01em;
   pointer-events: none;
@@ -133,13 +133,11 @@
   width: calc((4 / 5) * var(--canvas-dimension));
   margin: 1rem 0;
   font-size: 1.4em;
-  font-family: "Poppins";
   text-align: center;
   color: white;
 }
 
 .country-name {
-  color: rgb(30, 0, 255);
   text-transform: capitalize;
 }
 
@@ -156,7 +154,7 @@
 }
 
 #country-input-wrapper {
-  width: calc((4 / 5) * var(--canvas-dimension));
+  width: calc((9 / 10) * var(--canvas-dimension));
   margin: 16px 4px;
   display: flex;
   align-items: center;
@@ -190,5 +188,35 @@
 }
 
 #past-guesses-wrapper {
-  width: calc((4 / 5) * var(--canvas-dimension));
+  width: var(--canvas-dimension);
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: rgb(40, 40, 40);
+  border-radius: 5px;
+}
+
+.past-guess {
+  width: fit-content;
+  margin: 0.25rem;
+  padding: 0.2rem 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(80, 80, 80);
+  border-radius: 4px;
+}
+
+.past-guess-country {
+  font-size: 1.1em;
+  color: white;
+  text-transform: capitalize;
+}
+
+.past-guess-rating {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-left: 0.5rem;
+  background-color: red;
+  border-radius: 2px;
 }

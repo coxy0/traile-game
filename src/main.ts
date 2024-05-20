@@ -11,7 +11,7 @@ import { attachCheckboxFuncs } from "./utils/checkbox";
 import { islandCountries } from "./utils/island";
 import { randomCountries } from "./utils/randomCountries";
 import { dist, closestPoints } from "./utils/closest";
-import { polygonCentroid } from "./utils/centroid";
+// import { polygonCentroid } from "./utils/centroid";
 
 const canvas: HTMLCanvasElement = document.createElement("canvas");
 document.getElementById("globe-container")?.appendChild(canvas);
@@ -31,10 +31,10 @@ camera.position.setZ(176);
 
 const colourMap = new Map();
 for (const country of countries)
-  colourMap.set(country.properties.ISO_A3, randomHexColour());
+  colourMap.set(country.properties.ADMIN.toLowerCase(), randomHexColour());
 const getPolygonCapColor = (feature: {
-  properties: { ISO_A3: string };
-}): string => colourMap.get(feature.properties.ISO_A3);
+  properties: { ADMIN: string };
+}): string => colourMap.get(feature.properties.ADMIN.toLowerCase());
 
 const earth = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
   .globeImageUrl(globeImage)
@@ -156,12 +156,11 @@ do {
 refreshCountries(country1);
 refreshCountries(country2);
 
-const country1Center = polygonCentroid(country1Points);
-const country2Center = polygonCentroid(country2Points);
-
 const updateCountrySpan = (id: string, country: string) => {
   const countrySpan = document.getElementById(id) as HTMLSpanElement;
   countrySpan.innerHTML = country;
+  const countryColour = colourMap.get(country);
+  countrySpan.style.setProperty("color", countryColour);
 };
 
 updateCountrySpan("country-name-1", country1);
@@ -169,13 +168,39 @@ updateCountrySpan("country-name-2", country2);
 
 //
 
+const createPastGuess = (country: string) => {
+  const wrapper = document.getElementById("past-guesses-wrapper");
+
+  const pastGuessDiv = document.createElement("div");
+  pastGuessDiv.className = "past-guess";
+
+  const countrySpan = document.createElement("span");
+  countrySpan.className = "past-guess-country";
+  countrySpan.textContent = country;
+
+  const ratingDiv = document.createElement("div");
+  ratingDiv.className = "past-guess-rating";
+
+  pastGuessDiv.appendChild(countrySpan);
+  pastGuessDiv.appendChild(ratingDiv);
+
+  wrapper?.appendChild(pastGuessDiv);
+};
+
+//
+
+const successfulSubmit = (inputValue: string) => {
+  refreshCountries(inputValue);
+  createPastGuess(inputValue);
+};
+
 const handleSubmit = () => {
   const inputValue = countryInput.value.toLowerCase();
   if (!inputValue) return;
   countryInput.value = "";
   console.log(`Entered value: ${inputValue}`);
 
-  if (countriesData.includes(inputValue)) refreshCountries(inputValue);
+  if (countriesData.includes(inputValue)) successfulSubmit(inputValue);
 };
 
 const countryInput = document.getElementById(
@@ -191,3 +216,5 @@ const countryInputButton = document.getElementById(
 countryInputButton.addEventListener("click", (event: MouseEvent) => {
   if (event.button === 0) handleSubmit();
 });
+
+//
