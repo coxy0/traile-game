@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import ThreeGlobe from "three-globe";
 import globeImage from "./assets/images/earth.jpg";
+import globeBumpImage from "./assets/images/earth-topography.jpg";
 
 import { randomHexColour } from "./utils/randomHex";
 import { attachCheckboxFuncs } from "./utils/checkbox";
@@ -17,9 +18,8 @@ const canvas: HTMLCanvasElement = document.createElement("canvas");
 document.getElementById("globe-container")?.appendChild(canvas);
 const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
 renderer.setPixelRatio(window.devicePixelRatio);
-const dimension = parseInt(
-  getComputedStyle(document.body).getPropertyValue("--canvas-dimension")
-);
+const styles = getComputedStyle(document.body);
+const dimension = parseInt(styles.getPropertyValue("--canvas-dimension"));
 renderer.setSize(dimension, dimension);
 
 const scene = new THREE.Scene();
@@ -38,6 +38,7 @@ const getPolygonCapColor = (feature: {
 
 const earth = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
   .globeImageUrl(globeImage)
+  .bumpImageUrl(globeBumpImage)
   .showAtmosphere(false)
   .onGlobeReady(() => {
     const globeContainer = document.getElementById("globe-container");
@@ -45,13 +46,14 @@ const earth = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
     globeContainer?.removeChild(loadingText!);
 
     console.log(`Loaded texture: ${globeImage}`);
+    console.log(`Loaded texture: ${globeBumpImage}`);
   })
   .polygonsData(countries)
   // .polygonCapColor(randomHexColour)
   .polygonCapColor(getPolygonCapColor as (obj: object) => string)
   .polygonSideColor(() => "rgba(0, 0, 0, 1)")
   .polygonStrokeColor(() => "#111")
-  .polygonsTransitionDuration(1500);
+  .polygonsTransitionDuration(1750);
 scene.add(earth);
 
 const highlightedCountries: string[] = [];
@@ -68,9 +70,21 @@ const refreshCountries = (countryName: string | null) => {
 };
 refreshCountries(null);
 
+let rotateEarth = false;
+let rotateEarthChecked = false;
+attachCheckboxFuncs(
+  "rotate-earth",
+  () => (rotateEarth = rotateEarthChecked = true),
+  () => (rotateEarth = rotateEarthChecked = false)
+);
+
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.addEventListener("start", () => (rotateEarth = false));
-controls.addEventListener("end", () => (rotateEarth = true));
+controls.addEventListener("start", () => {
+  if (rotateEarthChecked) rotateEarth = false;
+});
+controls.addEventListener("end", () => {
+  if (rotateEarthChecked) rotateEarth = true;
+});
 controls.enablePan = false;
 controls.rotateSpeed = 0.18;
 controls.minDistance = 115;
@@ -80,13 +94,6 @@ controls.addEventListener("change", () => {
   if (distance <= 176) controls.rotateSpeed = 0.002 * distance - 0.19;
   else controls.rotateSpeed = 0.0004 * distance + 0.11;
 });
-
-let rotateEarth = true;
-attachCheckboxFuncs(
-  "rotate-earth",
-  () => (rotateEarth = true),
-  () => (rotateEarth = false)
-);
 
 (function animate() {
   requestAnimationFrame(animate);
