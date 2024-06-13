@@ -180,13 +180,7 @@ const centreCountry = (countryPoints: number[][]) => {
   earth.rotation.set(rotationX, rotationY, 0);
 };
 
-// centreCountry(country1Points);
-
-document.addEventListener("keydown", (event: KeyboardEvent) => {
-  const offset = 0.05;
-  if (event.key === "ArrowLeft") earth.rotation.z += offset;
-  if (event.key === "ArrowRight") earth.rotation.z -= offset;
-});
+centreCountry(country1Points);
 
 //
 
