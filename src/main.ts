@@ -174,12 +174,19 @@ updateCountrySpan("country-name-2", country2);
 
 const centreCountry = (countryPoints: number[][]) => {
   const [cLong, cLat] = polygonCentroid(countryPoints);
+
   const rotationX = (cLat * Math.PI) / 180;
   const rotationY = -(cLong * Math.PI) / 180;
   earth.rotation.set(rotationX, rotationY, 0);
 };
 
-centreCountry(country1Points);
+// centreCountry(country1Points);
+
+document.addEventListener("keydown", (event: KeyboardEvent) => {
+  const offset = 0.05;
+  if (event.key === "ArrowLeft") earth.rotation.z += offset;
+  if (event.key === "ArrowRight") earth.rotation.z -= offset;
+});
 
 //
 
